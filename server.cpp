@@ -4,7 +4,7 @@
 #include <sstream>
 
 // see https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
-static const char *MY_PRO = "wss";
+static const char *MY_PRO = "sub-protocol";
 
 static int counter = 0;
 static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
@@ -18,7 +18,7 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 	switch (reason)
 	{
 	case LWS_CALLBACK_HTTP:
-		lws_serve_http_file(wsi, "example.html", "text/html", NULL, 0);
+		lws_serve_http_file(wsi, "../example.html", "text/html", NULL, 0);
 		break;
 	default:
 		break;
@@ -37,13 +37,17 @@ static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, v
 
 	switch (reason)
 	{
+	case LWS_CALLBACK_ESTABLISHED:
+		lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
+		break;
+
 	case LWS_CALLBACK_RECEIVE:
 		lws_callback_on_writable_all_protocol(lws_get_context(wsi), lws_get_protocol(wsi));
 		break;
 
 	case LWS_CALLBACK_SERVER_WRITEABLE:
 	{
-		counter ++;
+		counter++;
 		std::stringstream ss;
 		ss << "hi " << counter;
 

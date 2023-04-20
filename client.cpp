@@ -4,7 +4,7 @@
 #include <sstream>
 
 // see https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
-static const char *MY_PRO = "wss";
+static const char *MY_PRO = "sub-protocol";
 
 static int send_times = 10;
 static int cur_times = 0;
@@ -19,8 +19,6 @@ static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, v
 	switch (reason)
 	{
 	case LWS_CALLBACK_CLIENT_ESTABLISHED:
-		cur_times++;
-		lws_callback_on_writable(wsi);
 		break;
 
 	case LWS_CALLBACK_CLIENT_RECEIVE:
