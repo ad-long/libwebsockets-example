@@ -2,7 +2,7 @@
 <html>
 <title>Websocket example</title>
 <script>
-  var socket = new WebSocket( "ws://" + document.domain + ':' + location.port, "sub-protocol" );
+  var socket = new WebSocket( "wss://" + document.domain + ':' + location.port, "sub-protocol" );
   function update(msg) { document.getElementById("num").innerHTML = msg; }
   socket.onopen = function() { console.log("socket open"); update("open"); }
   socket.onclose = function() { console.log("socket close"); update("closed"); }

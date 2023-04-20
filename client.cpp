@@ -5,14 +5,15 @@
 
 // see https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
 static const char *MY_PRO = "sub-protocol";
+static bool be_ssl = true;
 
 static int send_times = 10;
 static int cur_times = 0;
 static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
-	std::string msg((char *)in, len);
-	if (!msg.empty())
+	if (in != nullptr)
 	{
+		std::string msg((char *)in, len);
 		std::cout << reason << std::endl;
 		std::cout << msg << std::endl;
 	}
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
 	struct lws_context_creation_info cx_info = {0};
 	cx_info.port = CONTEXT_PORT_NO_LISTEN;
 	cx_info.protocols = protocols;
+	cx_info.options = be_ssl ? LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT : 0;
 
 	struct lws_context *cx = lws_create_context(&cx_info);
 
@@ -77,6 +79,7 @@ int main(int argc, char *argv[])
 	conn_info.host = conn_info.address;
 	conn_info.origin = conn_info.address;
 	conn_info.protocol = protocols[0].name;
+	conn_info.ssl_connection = be_ssl ? (LCCSCF_USE_SSL | LCCSCF_ALLOW_SELFSIGNED | LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK | LCCSCF_ALLOW_INSECURE) : 0;
 
 	lws *conn = lws_client_connect_via_info(&conn_info);
 

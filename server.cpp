@@ -5,14 +5,16 @@
 
 // see https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name
 static const char *MY_PRO = "sub-protocol";
+static bool be_ssl = true;
 
 static int counter = 0;
 static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
-	std::string msg((char *)in, len);
-	if (!msg.empty())
+	if (in != nullptr)
 	{
-		std::cout << "http: " << msg << std::endl;
+		std::string msg((char *)in, len);
+		std::cout << reason << std::endl;
+		std::cout << msg << std::endl;
 	}
 
 	switch (reason)
@@ -29,10 +31,10 @@ static int callback_http(struct lws *wsi, enum lws_callback_reasons reason, void
 
 static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
-	std::string msg((char *)in, len);
-	if (!msg.empty())
+	if (in != nullptr)
 	{
-		std::cout << MY_PRO << " " << reason << std::endl;
+		std::string msg((char *)in, len);
+		std::cout << reason << std::endl;
 		std::cout << msg << std::endl;
 	}
 
@@ -81,11 +83,14 @@ static struct lws_protocols protocols[] = {
 
 int main(int argc, char *argv[])
 {
-	// server url will be http://localhost:8000
-	// client must be new WebSocket( 'ws://localhost:8000', MY_PRO)
+	// server url will be https://localhost:8000
+	// client must be new WebSocket( 'wss://localhost:8000', MY_PRO)
 	struct lws_context_creation_info cx_info = {0};
 	cx_info.port = 8000;
 	cx_info.protocols = protocols;
+	cx_info.options = be_ssl ? LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT : 0;
+	cx_info.ssl_private_key_filepath = "../key.pem";
+	cx_info.ssl_cert_filepath = "../cert.pem";
 
 	struct lws_context *cx = lws_create_context(&cx_info);
 
