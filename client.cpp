@@ -13,6 +13,7 @@ static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, v
 	std::string msg((char *)in, len);
 	if (!msg.empty())
 	{
+		std::cout << reason << std::endl;
 		std::cout << msg << std::endl;
 	}
 
@@ -62,29 +63,29 @@ static struct lws_protocols protocols[] =
 
 int main(int argc, char *argv[])
 {
-	struct lws_context_creation_info info = {0};
-	info.port = CONTEXT_PORT_NO_LISTEN;
-	info.protocols = protocols;
+	struct lws_context_creation_info cx_info = {0};
+	cx_info.port = CONTEXT_PORT_NO_LISTEN;
+	cx_info.protocols = protocols;
 
-	struct lws_context *context = lws_create_context(&info);
+	struct lws_context *cx = lws_create_context(&cx_info);
 
-	struct lws_client_connect_info ccinfo = {0};
-	ccinfo.context = context;
-	ccinfo.address = "localhost";
-	ccinfo.port = 8000;
-	ccinfo.path = "/";
-	ccinfo.host = "127.0.0.1";
-	ccinfo.origin = ccinfo.address;
-	ccinfo.protocol = protocols[0].name;
+	struct lws_client_connect_info conn_info = {0};
+	conn_info.context = cx;
+	conn_info.address = "localhost";
+	conn_info.port = 8000;
+	conn_info.path = "/";
+	conn_info.host = "127.0.0.1";
+	conn_info.origin = conn_info.address;
+	conn_info.protocol = protocols[0].name;
 
-	lws *web_socket = lws_client_connect_via_info(&ccinfo);
+	lws *conn = lws_client_connect_via_info(&conn_info);
 
 	while (true)
 	{
-		lws_service(context, /* timeout_ms = */ 250);
+		lws_service(cx, /* timeout_ms = */ 250);
 	}
 
-	lws_context_destroy(context);
+	lws_context_destroy(cx);
 
 	return 0;
 }

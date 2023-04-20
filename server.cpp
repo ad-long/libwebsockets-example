@@ -32,7 +32,8 @@ static int callback_example(struct lws *wsi, enum lws_callback_reasons reason, v
 	std::string msg((char *)in, len);
 	if (!msg.empty())
 	{
-		std::cout << MY_PRO << ": " << msg << std::endl;
+		std::cout << MY_PRO << " " << reason << std::endl;
+		std::cout << msg << std::endl;
 	}
 
 	switch (reason)
@@ -82,18 +83,18 @@ int main(int argc, char *argv[])
 {
 	// server url will be http://localhost:8000
 	// client must be new WebSocket( 'ws://localhost:8000', MY_PRO)
-	struct lws_context_creation_info info = {0};
-	info.port = 8000;
-	info.protocols = protocols;
+	struct lws_context_creation_info cx_info = {0};
+	cx_info.port = 8000;
+	cx_info.protocols = protocols;
 
-	struct lws_context *context = lws_create_context(&info);
+	struct lws_context *cx = lws_create_context(&cx_info);
 
 	while (true)
 	{
-		lws_service(context, /* timeout_ms = */ 1000000);
+		lws_service(cx, /* timeout_ms = */ 1000000);
 	}
 
-	lws_context_destroy(context);
+	lws_context_destroy(cx);
 
 	return 0;
 }
