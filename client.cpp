@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 	conn_info.address = "localhost";
 	conn_info.port = 8000;
 	conn_info.path = "/";
-	conn_info.host = "127.0.0.1";
+	conn_info.host = conn_info.address;
 	conn_info.origin = conn_info.address;
 	conn_info.protocol = protocols[0].name;
 
