@@ -3,7 +3,7 @@
 A simple libwebsockets example.
 
 ## stand subprotocol
-< https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name>
+<https://www.iana.org/assignments/websocket/websocket.xml#subprotocol-name>
 
 ## create pem file
 ``` shell
